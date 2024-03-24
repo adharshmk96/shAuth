@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"errors"
+	"github.com/adharshmk96/shAuth/core"
 	"github.com/adharshmk96/shAuth/core/model"
 	"log/slog"
 	"time"
@@ -50,18 +52,44 @@ func (h *authHandler) Register(c *fiber.Ctx) error {
 
 	err = h.accountService.RegisterAccount(accData)
 	if err != nil {
+		message := "cannot register account"
+		if errors.Is(err, core.ErrAccountExists) {
+			message = "account already exists"
+		}
+
 		h.logger.Error(
 			"register handler: cannot register account",
 			slog.String("error", err.Error()),
 		)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "cannot register account",
+			"error": message,
 		})
 	}
 
-	h.logger.Info("Register Handler: account created", "email", accData.Email)
+	h.logger.Info("Register Handler: account created", "email", accData.ID)
+
+	signedJWT, err := h.accountService.GenerateJWT(accData)
+	if err != nil {
+		h.logger.Error(
+			"register handler: cannot generate token: ",
+			slog.String("error", err.Error()),
+		)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "cannot generate token",
+		})
+	}
+
+	c.Cookie(&fiber.Cookie{
+		Name:     viper.GetString("auth.cookie_name"),
+		Value:    signedJWT,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+		SameSite: "Lax",
+	})
+
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "account created",
+		"message":  "account created",
+		"redirect": viper.GetString("auth.redirect_url"),
 	})
 }
 
@@ -126,7 +154,8 @@ func (h *authHandler) Login(c *fiber.Ctx) error {
 	})
 
 	return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
-		"message": "login success",
+		"message":  "login success",
+		"redirect": viper.GetString("auth.redirect_url"),
 	})
 }
 
@@ -137,12 +166,15 @@ func (h *authHandler) Profile(c *fiber.Ctx) error {
 
 	acc, err := h.accountService.GetAccountByEmail(email)
 	if err != nil {
+		utils.ClearCookie(c, viper.GetString("auth.cookie_name"))
+
 		h.logger.Error(
 			"profile handler: cannot get account",
 			slog.String("error", err.Error()),
 		)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "cannot get account",
+			"error": "Unauthorized",
+			"login": viper.GetString("auth.login_url"),
 		})
 	}
 

@@ -1,0 +1,82 @@
+<main class="container-fluid main">
+    <div class="form-container">
+        <div id="register-errors"></div>
+        <h1>Register</h1>
+        <form id="register-form">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <label for="confirm-password">Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+            <span>
+                <p>
+                    Already have an account? <a href="/ui/login">Login</a>
+                </p>
+            </span>
+            <button type="submit" id="register-submit">Register</button>
+        </form>
+    </div>
+</main>
+
+<script>
+    const form = document.querySelector('#register-form');
+    const submit = document.querySelector('#register-submit');
+
+    function clearPassword() {
+        const passwordInput = document.getElementById('password');
+        passwordInput.value = '';
+
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        confirmPasswordInput.value = '';
+    }
+
+    function registerFailed(message) {
+        const errors = document.getElementById('register-errors');
+        errors.innerHTML = '';
+        errors.innerHTML = `<article class="failed">${message}</article>`;
+    }
+
+    function clearErrors() {
+        const errors = document.getElementById('register-errors');
+        errors.innerHTML = '';
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+        const confirmPassword = document.querySelector('#confirm-password').value;
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        submit.setAttribute('aria-busy', 'true');
+
+        const response = await fetch('{{RegisterApi}}', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+
+        submit.removeAttribute('aria-busy');
+
+        const data = await response.json();
+        if (response.status !== 201) {
+            registerFailed(data.error || 'Registration failed...');
+            clearPassword();
+            return;
+        }
+
+        window.location.href = data.redirect;
+    });
+    </script>

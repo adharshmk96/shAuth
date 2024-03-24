@@ -11,3 +11,11 @@ migration:
 %:
 	@:
 
+pre:
+	go install github.com/swaggo/swag/cmd/swag@latest
+	brew install golang-migrate
+
+init: pre keys swagger
+
+run:
+	go run main.go

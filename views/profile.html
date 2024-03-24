@@ -1,0 +1,19 @@
+<main>
+    <h1>Hello. Welcome,</h1>
+    <p>{{Email}}</p>
+    <button>Logout</button>
+</main>
+
+<script>
+    const button = document.querySelector('button');
+    button.addEventListener('click', () => {
+        fetch("{{LogoutApi}}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(() => {
+            window.location.href = "{{LoginUi}}";
+        });
+    });
+</script>

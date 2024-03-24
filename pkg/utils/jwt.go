@@ -20,7 +20,7 @@ func loadPrivateKey() (*ecdsa.PrivateKey, error) {
 		return privateKey, nil
 	}
 
-	privateKeyPath := viper.GetString("jwt.private_key")
+	privateKeyPath := viper.GetString("auth.jwt.private_key_path")
 	content, err := os.ReadFile(privateKeyPath)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func loadPublicKey() (*ecdsa.PublicKey, error) {
 		return publicKey, nil
 	}
 
-	publicKeyPath := viper.GetString("jwt.private_key")
+	publicKeyPath := viper.GetString("auth.jwt.public_key_path")
 	content, err := os.ReadFile(publicKeyPath)
 	if err != nil {
 		return nil, err
@@ -113,7 +113,6 @@ func NewClaims() *jwt.MapClaims {
 			"ServiceHub",
 		},
 		"iat": now,
-		"nbf": now,
 		"exp": expiry,
 	}
 }

@@ -39,10 +39,8 @@ func TestEncodeJWT(t *testing.T) {
 func TestDecodeJWT(t *testing.T) {
 	setup()
 
-	claims := &jwt.MapClaims{
-		"email": "test@email.com",
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
-	}
+	claims := utils.NewClaims()
+	(*claims)["email"] = "test@email.com"
 
 	token, err := utils.EncodeJWT(claims)
 	assert.NoError(t, err, "Error should be nil")

@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark"/>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.blue.min.css"
+    />
+    <title>Login</title>
+</head>
+<style>
+    .main {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        margin-top: auto;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-container {
+        height: 100%;
+        min-width: 20rem;
+    }
+
+    nav {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .failed {
+        background-color: #f44336;
+        color: white;
+        border-radius: 5px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+</style>
+<body>
+<div>
+    <nav>
+        <ul></ul>
+        <ul>
+            <li>
+                <select id="theme-switcher" data-theme-switcher>
+                    <option value="auto">Auto</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </li>
+        </ul>
+    </nav>
+</div>
+{{{embed}}}
+</body>
+<script>
+    const themeSwitcher = {
+        // Config
+        _scheme: "auto",
+        menuTarget: "#theme-switcher",
+        buttonsTarget: "a[data-theme-switcher]",
+        buttonAttribute: "data-theme-switcher",
+        rootAttribute: "data-theme",
+        localStorageKey: "picoPreferredColorScheme",
+
+        // Init
+        init() {
+            this.scheme = this.schemeFromLocalStorage;
+            this.initSwitchers();
+        },
+
+        // Get color scheme from local storage
+        get schemeFromLocalStorage() {
+            return window.localStorage?.getItem(this.localStorageKey) ?? this._scheme;
+        },
+
+        // Preferred color scheme
+        get preferredColorScheme() {
+            return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        },
+
+        // Init switchers
+        initSwitchers() {
+            const select = document.querySelector(this.menuTarget);
+            select.value = this.scheme;
+            select.addEventListener(
+                "change",
+                (event) => {
+                    this.scheme = event.target.value;
+                },
+                false
+            );
+        },
+
+        // Set scheme
+        set scheme(scheme) {
+            this._scheme = scheme;
+            this.applyScheme();
+            this.schemeToLocalStorage();
+        },
+
+        // Get scheme
+        get scheme() {
+            return this._scheme;
+        },
+
+        // Apply scheme
+        applyScheme() {
+            let schemeToSet = this.scheme === "auto" ? this.preferredColorScheme : this.scheme;
+            document.querySelector("html")?.setAttribute(this.rootAttribute, schemeToSet);
+        },
+
+        // Store scheme to local storage
+        schemeToLocalStorage() {
+            window.localStorage?.setItem(this.localStorageKey, this.scheme);
+        },
+    };
+
+    // Init
+    themeSwitcher.init();
+</script>
+</html>

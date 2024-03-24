@@ -1,22 +1,25 @@
 package server
 
 import (
-	"github.com/gofiber/fiber/v2"
-	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/adharshmk96/shAuth/server/infra"
 	"github.com/adharshmk96/shAuth/server/routing"
+	"github.com/gofiber/fiber/v2"
+	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/template/mustache/v2"
 )
 
 func StartHttpServer(port string) (*fiber.App, chan bool) {
-
 	infra.LoadDefaultConfig()
 	logger := infra.GetLogger()
+	engine := mustache.New("./views", ".html")
 
-	server := fiber.New()
+	server := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
 	// middlewares
 	server.Use(fiberLogger.New())

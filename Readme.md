@@ -1,10 +1,23 @@
 # SH Account
 
-Account management for SH.
+Account management server.
+
+- Login
+- Register
+- Change Password
+- Logout
+
+handle session with jwt
+
+## init
+
+- `make init`
 
 ## Running the project
 
-run `air` to start the server for development
+- `make run`
+- `air`
+- `go run main.go`
 
 ## Architecture
 

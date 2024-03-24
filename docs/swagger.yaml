@@ -16,9 +16,9 @@ definitions:
         minLength: 8
         type: string
     required:
-      - email
-      - new_password
-      - password
+    - email
+    - new_password
+    - password
     type: object
   handler.LoginRequest:
     properties:
@@ -29,8 +29,8 @@ definitions:
         example: Pa$$w0rd!
         type: string
     required:
-      - email
-      - password
+    - email
+    - password
     type: object
   handler.RegisterRequest:
     properties:
@@ -46,8 +46,8 @@ definitions:
         example: user1234
         type: string
     required:
-      - email
-      - password
+    - email
+    - password
     type: object
 host: localhost:8080
 info:
@@ -89,13 +89,13 @@ paths:
   /api/auth/reset-password:
     post:
       parameters:
-        - description: Reset Password Request
-          in: body
-          name: resetPasswordRequest
-          required: true
-          schema:
-            $ref: '#/definitions/handler.ChangePasswordRequest'
-      responses: { }
+      - description: Reset Password Request
+        in: body
+        name: resetPasswordRequest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ChangePasswordRequest'
+      responses: {}
       summary: Reset password
 produces:
 - application/json

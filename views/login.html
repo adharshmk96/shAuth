@@ -1,0 +1,72 @@
+<main class="container-fluid main">
+    <div class="form-container">
+        <div id="login-errors"></div>
+        <h1>Login</h1>
+        <form id="login-form">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <span>
+                <p>
+                    Don't have an account? <a href="/ui/register">Register</a>
+                </p>
+            </span>
+            <button type="submit" id="login-submit">Login</button>
+        </form>
+    </div>
+</main>
+<script>
+    const loginForm = document.getElementById('login-form');
+    const loginSubmit = document.getElementById('login-submit');
+
+    function clearPassword() {
+        const passwordInput = document.getElementById('password');
+        passwordInput.value = '';
+    }
+
+    function loginFailed() {
+        const loginErrors = document.getElementById('login-errors');
+        loginErrors.innerHTML = `
+            <article class="failed">
+                Login Failed...
+            </article>
+        `;
+    }
+
+    function clearErrors() {
+        const loginErrors = document.getElementById('login-errors');
+        loginErrors.innerHTML = '';
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrors();
+        // add aria-busy="true" to the button
+        loginSubmit.setAttribute('aria-busy', 'true');
+        const formData = new FormData(loginForm);
+        const email = formData.get('email');
+        const password = formData.get('password');
+        const response = await fetch('{{LoginApi}}', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+        loginSubmit.removeAttribute('aria-busy');
+        const data = await response.json();
+
+        if (response.status !== 202) {
+            loginFailed();
+            clearPassword();
+            return;
+        }
+
+        window.location.href = data.redirect;
+    });
+</script>
