@@ -1,0 +1,29 @@
+@base_url=http://localhost:8080
+
+###
+
+POST {{base_url}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user1@email.com",
+  "password": "password"
+}
+
+###
+
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user1@email.com",
+  "password": "password"
+}
+
+###
+
+GET {{base_url}}/api/auth/profile
+
+###
+
+POST {{base_url}}/api/auth/logout

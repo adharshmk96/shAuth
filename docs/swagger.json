@@ -1,0 +1,150 @@
+{
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is account service for ServiceHub",
+        "title": "ServiceHub Account API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "summary": "Login account",
+                "parameters": [
+                    {
+                        "description": "Login Request",
+                        "name": "loginRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "summary": "Logout account",
+                "responses": {}
+            }
+        },
+        "/api/auth/profile": {
+            "get": {
+                "summary": "Profile of account",
+                "responses": {}
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "summary": "Register an account",
+                "parameters": [
+                    {
+                        "description": "Register Request",
+                        "name": "RegisterRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/auth/reset-password": {
+            "post": {
+                "summary": "Reset password",
+                "parameters": [
+                    {
+                        "description": "Reset Password Request",
+                        "name": "resetPasswordRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.ChangePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "handler.ChangePasswordRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "new_password",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "shuser@maildrop.cc"
+                },
+                "new_password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 8,
+                    "example": "Pa$$word1"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 8,
+                    "example": "Pa$$w0rd!"
+                }
+            }
+        },
+        "handler.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "shuser@maildrop.cc"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "Pa$$w0rd!"
+                }
+            }
+        },
+        "handler.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "shuser@maildrop.cc"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 8,
+                    "example": "Pa$$w0rd!"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "user1234"
+                }
+            }
+        }
+    }
+}
