@@ -5,119 +5,117 @@
     <meta name="color-scheme" content="light dark"/>
     <link
             rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.blue.min.css"
-    />
+            href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css"
+    >
     <title>Login</title>
 </head>
-<style>
-    .main {
-        min-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        margin-top: auto;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .form-container {
-        height: 100%;
-        min-width: 20rem;
-    }
-
-    nav {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-
-    .failed {
-        background-color: #f44336;
-        color: white;
-        border-radius: 5px;
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-</style>
 <body>
 <div>
-    <nav>
-        <ul></ul>
-        <ul>
-            <li>
-                <select id="theme-switcher" data-theme-switcher>
-                    <option value="auto">Auto</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </li>
-        </ul>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-scan-face">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                    <path d="M9 9h.01"/>
+                    <path d="M15 9h.01"/>
+                </svg>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="nav-menu-items">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="nav-menu-items" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="dropdown is-right is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button" aria-haspopup="true" aria-controls=theme-toggle">
+                                <span id="theme-indicator">Auto</span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+                                <div class="dropdown-item">
+                                    <a href="#" data-theme-scheme="auto" class="dropdown-item"> Auto </a>
+                                    <a href="#" data-theme-scheme="dark" class="dropdown-item"> Dark </a>
+                                    <a href="#" data-theme-scheme="light" class="dropdown-item"> Light </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </nav>
+
 </div>
 {{{embed}}}
 </body>
 <script>
-    const themeSwitcher = {
-        // Config
-        _scheme: "auto",
-        menuTarget: "#theme-switcher",
-        buttonsTarget: "a[data-theme-switcher]",
-        buttonAttribute: "data-theme-switcher",
-        rootAttribute: "data-theme",
-        localStorageKey: "picoPreferredColorScheme",
+    document.addEventListener('DOMContentLoaded', () => {
 
-        // Init
-        init() {
-            this.scheme = this.schemeFromLocalStorage;
-            this.initSwitchers();
-        },
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
-        // Get color scheme from local storage
-        get schemeFromLocalStorage() {
-            return window.localStorage?.getItem(this.localStorageKey) ?? this._scheme;
-        },
+        // Add a click event on each of them
+        $navbarBurgers.forEach(el => {
+            el.addEventListener('click', () => {
 
-        // Preferred color scheme
-        get preferredColorScheme() {
-            return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        },
+                // Get the target from the "data-target" attribute
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
 
-        // Init switchers
-        initSwitchers() {
-            const select = document.querySelector(this.menuTarget);
-            select.value = this.scheme;
-            select.addEventListener(
-                "change",
-                (event) => {
-                    this.scheme = event.target.value;
-                },
-                false
-            );
-        },
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
 
-        // Set scheme
-        set scheme(scheme) {
-            this._scheme = scheme;
-            this.applyScheme();
-            this.schemeToLocalStorage();
-        },
+            });
+        });
+    });
+</script>
 
-        // Get scheme
-        get scheme() {
-            return this._scheme;
-        },
+<script>
+    const sun = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>'
+    const moon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>'
+    const auto = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-moon"><path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>'
 
-        // Apply scheme
-        applyScheme() {
-            let schemeToSet = this.scheme === "auto" ? this.preferredColorScheme : this.scheme;
-            document.querySelector("html")?.setAttribute(this.rootAttribute, schemeToSet);
-        },
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggles = document.querySelectorAll('[data-theme-scheme]');
+        const localStorageScheme = localStorage.getItem('theme-scheme');
+        const preferredTheme = () => {
+            const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            return darkQuery.matches ? 'dark' : 'light';
+        };
 
-        // Store scheme to local storage
-        schemeToLocalStorage() {
-            window.localStorage?.setItem(this.localStorageKey, this.scheme);
-        },
-    };
+        const updateTheme = (themeScheme) => {
+            const themeIndicator = document.getElementById('theme-indicator');
+            themeIndicator.innerHTML = themeScheme === 'auto' ? auto : themeScheme === 'dark' ? moon : sun;
+            document.documentElement.setAttribute('data-theme', themeScheme === 'auto' ? preferredTheme() : themeScheme);
+            localStorage.setItem('theme-scheme', themeScheme);
+        };
 
-    // Init
-    themeSwitcher.init();
+        const themeScheme = localStorageScheme || 'auto';
+        updateTheme(themeScheme);
+
+        themeToggles.forEach((toggle) => {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const themeScheme = toggle.getAttribute('data-theme-scheme');
+                updateTheme(themeScheme);
+            });
+        });
+
+    });
 </script>
 </html>

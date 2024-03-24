@@ -1,40 +1,64 @@
-<main class="container-fluid main">
-    <div class="form-container">
-        <div id="register-errors"></div>
-        <h1>Register</h1>
+<main class="hero is-fullheight is-align-items-center is-justify-content-center">
+    <div class="column is-half">
+        <div id="register-errors" class="mb-3"></div>
+        <h1 class="title">Register</h1>
+        <h2 class="subtitle">Enter your details</h2>
         <form id="register-form">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-            <label for="confirm-password">Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" required>
-            <span>
-                <p>
-                    Already have an account? <a href="/ui/login">Login</a>
+            <div class="field">
+                <label for="register-email" class="label">Email</label>
+                <p class="control">
+                    <input id="register-email" class="input" name="email" type="email" placeholder="Email">
                 </p>
-            </span>
-            <button type="submit" id="register-submit">Register</button>
+                <p class="help">Enter your email here</p>
+            </div>
+            <div class="field">
+                <label for="register-password" class="label">Password</label>
+                <p class="control">
+                    <input id="register-password" class="input" name="password" type="password" placeholder="Password">
+                </p>
+                <p class="help">Enter your password here</p>
+            </div>
+            <div class="field">
+                <label for="register-confirm-password" class="label">Confirm Password</label>
+                <p class="control">
+                    <input id="register-confirm-password" class="input" name="confirm-password" type="password"
+                           placeholder="Confirm Password">
+                </p>
+                <p class="help">Confirm your password here</p>
+            </div>
+            <div class="field">
+                <p>
+                    Don't have an account? <a href="/ui/login">Login here</a>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control">
+                    <button id="register-submit" class="button is-success" type="submit">
+                        Register
+                    </button>
+                </p>
+            </div>
         </form>
     </div>
 </main>
-
 <script>
-    const form = document.querySelector('#register-form');
+    const registerForm = document.querySelector('#register-form');
     const submit = document.querySelector('#register-submit');
 
     function clearPassword() {
-        const passwordInput = document.getElementById('password');
+        const passwordInput = document.getElementById('register-password');
         passwordInput.value = '';
 
-        const confirmPasswordInput = document.getElementById('confirm-password');
+        const confirmPasswordInput = document.getElementById('register-confirm-password');
         confirmPasswordInput.value = '';
     }
 
     function registerFailed(message) {
-        const errors = document.getElementById('register-errors');
-        errors.innerHTML = '';
-        errors.innerHTML = `<article class="failed">${message}</article>`;
+        const loginErrors = document.getElementById('register-errors');
+        loginErrors.innerHTML = `
+        <div class="notification is-danger">
+          ${message}
+        </div>`;
     }
 
     function clearErrors() {
@@ -42,19 +66,18 @@
         errors.innerHTML = '';
     }
 
-    form.addEventListener('submit', async (e) => {
+    registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const email = document.querySelector('#email').value;
-        const password = document.querySelector('#password').value;
-        const confirmPassword = document.querySelector('#confirm-password').value;
+        const formData = new FormData(registerForm);
+        const email = formData.get('email');
+        const password = formData.get('password');
+        const confirmPassword = formData.get('confirm-password');
 
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            registerFailed('Passwords do not match...');
             return;
         }
-
-        submit.setAttribute('aria-busy', 'true');
 
         const response = await fetch('{{RegisterApi}}', {
             method: 'POST',
@@ -68,8 +91,6 @@
             })
         });
 
-        submit.removeAttribute('aria-busy');
-
         const data = await response.json();
         if (response.status !== 201) {
             registerFailed(data.error || 'Registration failed...');
@@ -79,4 +100,4 @@
 
         window.location.href = data.redirect;
     });
-    </script>
+</script>
