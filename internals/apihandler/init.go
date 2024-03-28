@@ -1,4 +1,4 @@
-package handler
+package apihandler
 
 import (
 	"github.com/adharshmk96/shAuth/core"

@@ -1,22 +1,21 @@
 package server
 
 import (
+	"github.com/gofiber/template/mustache/v2"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/adharshmk96/shAuth/server/infra"
-	"github.com/adharshmk96/shAuth/server/routing"
 	"github.com/gofiber/fiber/v2"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/template/mustache/v2"
 )
 
 func StartHttpServer(port string) (*fiber.App, chan bool) {
 	infra.LoadDefaultConfig()
 	logger := infra.GetLogger()
-	engine := mustache.New("./views", ".html")
-
+	engine := mustache.NewFileSystem(http.FS(indexHTML), ".html")
 	server := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -24,7 +23,7 @@ func StartHttpServer(port string) (*fiber.App, chan bool) {
 	// middlewares
 	server.Use(fiberLogger.New())
 
-	routing.SetupRoutes(server)
+	setupRoutes(server)
 
 	// Start the server
 	if err := server.Listen(port); err != nil {
