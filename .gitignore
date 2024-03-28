@@ -20,3 +20,4 @@ tmp/
 .vscode
 
 config.yaml
+server/public_dist
